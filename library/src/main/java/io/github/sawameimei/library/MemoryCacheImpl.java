@@ -140,7 +140,7 @@ public enum MemoryCacheImpl implements MemoryCache {
     };
 
     protected LinkedHashMap<String, Bitmap> map;
-    protected long maxSize;
+    protected final long maxSize;
 
     MemoryCacheImpl(long maxSize) {
         this.maxSize = maxSize;

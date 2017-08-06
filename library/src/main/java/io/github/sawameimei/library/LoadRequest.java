@@ -3,7 +3,7 @@ package io.github.sawameimei.library;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import java.io.File;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 /**
@@ -64,41 +64,37 @@ public class LoadRequest implements Runnable {
         Bitmap bitmap = memoryCache.get(resource);
         if (bitmap != null) {
             if (checkTargetInvalide()) {
-                bitmap.recycle();
-                bitmap = null;
                 return;
             }
             displayer.display(bitmap);
         } else {
-            File file = diskCache.get(resource);
-            if (file != null) {
-                bitmap = this.decoder.decoder(file);
+            InputStream fileInputStream = diskCache.get(resource);
+            if (fileInputStream != null) {
+                bitmap = this.decoder.decoder(fileInputStream);
                 if (bitmap != null) {
                     memoryCache.put(resource, bitmap);
                     if (checkTargetInvalide()) {
-                        bitmap.recycle();
-                        bitmap = null;
                         return;
                     }
                     displayer.display(bitmap);
                 }
             } else {
-                file = downloader.download(resource);
-                if (file != null) {
-                    diskCache.put(resource, file);
-                    bitmap = this.decoder.decoder(file);
+                fileInputStream = downloader.download(resource);
+                if (fileInputStream != null) {
+                    diskCache.put(resource, fileInputStream);
+                    bitmap = this.decoder.decoder(fileInputStream);
                     if (checkTargetInvalide()) {
                         return;
                     }
                     if (bitmap != null) {
                         memoryCache.put(resource, bitmap);
                         if (checkTargetInvalide()) {
-                            bitmap.recycle();
-                            bitmap = null;
                             return;
                         }
                         displayer.display(bitmap);
                     }
+                }else{
+                    displayer.display(null);
                 }
             }
         }
@@ -160,7 +156,7 @@ public class LoadRequest implements Runnable {
             return this;
         }
 
-        public LoadRequest build(){
+        public LoadRequest build() {
             return loadRequest;
         }
     }

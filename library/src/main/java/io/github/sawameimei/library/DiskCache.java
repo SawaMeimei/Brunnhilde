@@ -1,6 +1,7 @@
 package io.github.sawameimei.library;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * Created by huangmeng on 2017/8/5.
@@ -8,9 +9,9 @@ import java.io.File;
 
 public interface DiskCache {
 
-    File get(String key);
+    InputStream get(String key);
 
-    void put(String key, File value);
+    void put(String key, InputStream value);
 
     long size();
 

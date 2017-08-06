@@ -10,16 +10,32 @@ public class LoadRequestCreator {
 
     private Brunnhilde brunnhilde;
     private String resource;
-    private final LoadRequest.LoadRequestBuilder requestBulider;
+    private final LoadRequest.LoadRequestBuilder requestBuilder;
 
     public LoadRequestCreator(Brunnhilde brunnhilde, String resource) {
         this.brunnhilde = brunnhilde;
         this.resource = resource;
-        requestBulider = new LoadRequest.LoadRequestBuilder();
+        requestBuilder = new LoadRequest.LoadRequestBuilder();
     }
 
-    public void into(ImageView view){
-        requestBulider.threadPool(brunnhilde.requestExecutor);
-        requestBulider.build().submit();
+    public void cacheOnlyMem() {
+        requestBuilder
+                .memoryCache(MemoryCacheImpl.LRU)
+                .diskCache(DiskCacheImpl.NO);
+    }
+
+    public void diskCacheOnly(){
+        requestBuilder
+                .memoryCache(MemoryCacheImpl.NO)
+                .diskCache(DiskCacheImpl.LRU);
+    }
+
+    public void centerCrop(){
+
+    }
+
+    public void into(ImageView view) {
+        requestBuilder.threadPool(brunnhilde.requestExecutor);
+        requestBuilder.build().submit();
     }
 }

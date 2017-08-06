@@ -8,6 +8,8 @@ public class Brunnhilde {
 
     private static Brunnhilde brunnhilde;
     ThreadPool requestExecutor = RequestExecutor.get();
+    MemoryCache memoryCache = MemoryCacheImpl.LRU;
+    DiskCache diskCache = DiskCacheImpl.LRU;
 
     private Brunnhilde() {
     }
