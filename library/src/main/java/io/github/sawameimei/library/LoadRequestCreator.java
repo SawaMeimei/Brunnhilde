@@ -15,27 +15,31 @@ public class LoadRequestCreator {
     public LoadRequestCreator(Brunnhilde brunnhilde, String resource) {
         this.brunnhilde = brunnhilde;
         this.resource = resource;
-        requestBuilder = new LoadRequest.LoadRequestBuilder();
+        requestBuilder = new LoadRequest.LoadRequestBuilder()
+                .resource(resource)
+                .downloader(brunnhilde.downloader)
+                .displayer(brunnhilde.displayer)
+                .threadPool(brunnhilde.requestExecutor)
+                .memoryCache(brunnhilde.memoryCache)
+                .decoder(brunnhilde.decoder)
+                .diskCache(brunnhilde.diskCache);
     }
 
-    public void cacheOnlyMem() {
+    public LoadRequestCreator cacheOnlyMem() {
         requestBuilder
                 .memoryCache(MemoryCacheImpl.LRU)
                 .diskCache(DiskCacheImpl.NO);
+        return this;
     }
 
-    public void diskCacheOnly(){
+    public LoadRequestCreator diskCacheOnly() {
         requestBuilder
                 .memoryCache(MemoryCacheImpl.NO)
                 .diskCache(DiskCacheImpl.LRU);
-    }
-
-    public void centerCrop(){
-
+        return this;
     }
 
     public void into(ImageView view) {
-        requestBuilder.threadPool(brunnhilde.requestExecutor);
-        requestBuilder.build().submit();
+        requestBuilder.target(view).build().submit();
     }
 }

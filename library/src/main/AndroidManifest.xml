@@ -2,13 +2,14 @@
 
     package="io.github.sawameimei.library">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
 
         <provider
             android:name=".BrunnhildeProvider"
-            android:authorities="${applicationId}.sawameimei.github.io"
+            android:authorities="${applicationId}.io.github.sawameimei"
             android:enabled="false" />
     </application>
-
 </manifest>

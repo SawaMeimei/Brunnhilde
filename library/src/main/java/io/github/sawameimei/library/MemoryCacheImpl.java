@@ -43,7 +43,9 @@ public enum MemoryCacheImpl implements MemoryCache {
 
         }
     },
-    LRU(Utils.calculateMemoryCacheSize(BrunnhildeProvider.context)) {
+    LRU(64 * 1024 * 1024) {
+        //LRU(Utils.calculateMemoryCacheSize(Brunnhilde.getContext())) {
+
 
         private long size;
 

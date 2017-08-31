@@ -61,40 +61,40 @@ public class LoadRequest implements Runnable {
         if (checkTargetInvalide()) {
             return;
         }
-        Bitmap bitmap = memoryCache.get(resource);
+        Bitmap bitmap = memoryCache.get(Utils.md5(resource));
         if (bitmap != null) {
             if (checkTargetInvalide()) {
                 return;
             }
-            displayer.display(bitmap);
+            displayer.display(target.get(), bitmap);
         } else {
-            InputStream fileInputStream = diskCache.get(resource);
+            InputStream fileInputStream = diskCache.get(Utils.md5(resource));
             if (fileInputStream != null) {
-                bitmap = this.decoder.decoder(fileInputStream);
+                bitmap = this.decoder.decoder(fileInputStream, target.get());
                 if (bitmap != null) {
-                    memoryCache.put(resource, bitmap);
+                    memoryCache.put(Utils.md5(resource), bitmap);
                     if (checkTargetInvalide()) {
                         return;
                     }
-                    displayer.display(bitmap);
+                    displayer.display(target.get(), bitmap);
                 }
             } else {
                 fileInputStream = downloader.download(resource);
                 if (fileInputStream != null) {
-                    diskCache.put(resource, fileInputStream);
-                    bitmap = this.decoder.decoder(fileInputStream);
+                    //diskCache.put(Utils.md5(resource), fileInputStream);
+                    bitmap = this.decoder.decoder(fileInputStream, target.get());
                     if (checkTargetInvalide()) {
                         return;
                     }
                     if (bitmap != null) {
-                        memoryCache.put(resource, bitmap);
+                        memoryCache.put(Utils.md5(resource), bitmap);
                         if (checkTargetInvalide()) {
                             return;
                         }
-                        displayer.display(bitmap);
+                        displayer.display(target.get(), bitmap);
                     }
-                }else{
-                    displayer.display(null);
+                } else {
+                    displayer.display(target.get(), null);
                 }
             }
         }

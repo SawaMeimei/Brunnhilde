@@ -1,5 +1,7 @@
 package io.github.sawameimei.library;
 
+import android.content.Context;
+
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import java.io.IOException;
@@ -12,7 +14,12 @@ import java.io.OutputStream;
 
 public enum DiskCacheImpl implements DiskCache {
 
-    NO(0) {
+    NO {
+        @Override
+        DiskCacheImpl init(Context context) {
+            return this;
+        }
+
         @Override
         public InputStream get(String key) {
             return null;
@@ -43,7 +50,17 @@ public enum DiskCacheImpl implements DiskCache {
 
         }
     },
-    LRU(1024 * 1024 * 200) {
+    LRU {
+        @Override
+        DiskCacheImpl init(Context context) {
+            this.maxSize = 200 * 1024 * 1024;
+            try {
+                lruCache = DiskLruCache.open(Utils.getDiskCacheDir(context, "image"), Utils.getAppVersion(context), 1, maxSize);
+            } catch (IOException e) {
+            }
+            return this;
+        }
+
         @Override
         public InputStream get(String key) {
             if (lruCache != null) {
@@ -120,14 +137,8 @@ public enum DiskCacheImpl implements DiskCache {
         }
     };
 
-    protected final long maxSize;
+    protected long maxSize;
     protected DiskLruCache lruCache;
 
-    DiskCacheImpl(long maxSize) {
-        this.maxSize = maxSize;
-        try {
-            lruCache = DiskLruCache.open(Utils.getDiskCacheDir(BrunnhildeProvider.context, "image"), Utils.getAppVersion(BrunnhildeProvider.context), 1, maxSize);
-        } catch (IOException e) {
-        }
-    }
+    abstract DiskCacheImpl init(Context context);
 }
